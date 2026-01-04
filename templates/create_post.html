@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Create Post - SocialBuddy{% endblock %}
+
+{% block content %}
+<div class="create-post-container">
+    <h1>Create New Post</h1>
+    
+    <form method="POST" action="{{ url_for('create_post') }}" enctype="multipart/form-data" class="post-form">
+        <div class="form-group">
+            <label for="caption">Caption</label>
+            <textarea id="caption" name="caption" rows="4" placeholder="What's on your mind?"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="media">Image or Video (optional)</label>
+            <input type="file" id="media" name="media" accept="image/*,video/mp4">
+            <small>Allowed: JPG, PNG, MP4 (Max 16MB)</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Create Post</button>
+        <a href="{{ url_for('feed') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
+

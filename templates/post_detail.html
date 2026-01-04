@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Post - SocialBuddy{% endblock %}
+
+{% block content %}
+<div class="post-detail-container">
+    <a href="{{ url_for('feed') }}" class="back-link">← Back to Feed</a>
+    
+    <div class="post-card post-detail">
+        <div class="post-header">
+            <span class="post-username">{{ post[5] }}</span>
+            <span class="post-date">{{ post[4].strftime('%Y-%m-%d %H:%M') if post[4] else '' }}</span>
+        </div>
+        
+        {% if post.caption %}
+            <p class="post-caption">{{ post.caption }}</p>
+        {% endif %}
+        
+        {% if post.media_path %}
+            <div class="post-media">
+                {% if post.media_path.endswith('.mp4') %}
+                    <video controls>
+                        <source src="{{ url_for('static', filename=post.media_path) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% else %}
+                    <img src="{{ url_for('static', filename=post.media_path) }}" alt="Post image">
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <div class="post-actions">
+            <form method="POST" action="{{ url_for('like_post', post_id=post.id) }}" style="display: inline;">
+                <button type="submit" class="btn-like {% if user_liked %}liked{% endif %}">
+                    ❤️ {{ like_count }} Likes
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="comments-section">
+        <h3>Comments</h3>
+        
+        <form method="POST" action="{{ url_for('comment_post', post_id=post.id) }}" class="comment-form">
+            <div class="form-group">
+                <textarea name="comment" rows="3" placeholder="Write a comment..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+        
+        <div class="comments-list">
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="comment-username">{{ comment.user_id }}</span>
+                            <span class="comment-date">{{ comment.created_at.strftime('%d %b %Y %I:%M %p') }}</span>
+                        </div>
+                        <p class="comment-text">{{ comment.comment }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-comments">No comments yet. Be the first to comment!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{{ username }}'s Profile - SocialBuddy{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>{{ username }}'s Profile</h1>
+    
+    <div class="profile-posts">
+        <h2>My Posts</h2>
+        
+        {% if posts %}
+            <div class="posts-list">
+                {% for post in posts %}
+                    <div class="post-card">
+                        <div class="post-header">
+                            <span class="post-date">{{ post[3].strftime('%Y-%m-%d %H:%M') if post[3] else '' }}</span>
+                        </div>
+                        
+                        {% if post[1] %}
+                            <p class="post-caption">{{ post[1] }}</p>
+                        {% endif %}
+                        
+                        {% if post[2] %}
+                            <div class="post-media">
+                                {% if post[2].endswith('.mp4') %}
+                                    <video controls>
+                                        <source src="{{ url_for('static', filename=post[2]) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                {% else %}
+                                    <img src="{{ url_for('static', filename=post[2]) }}" alt="Post image">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-posts">You haven't created any posts yet. <a href="{{ url_for('create_post') }}">Create your first post</a>!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

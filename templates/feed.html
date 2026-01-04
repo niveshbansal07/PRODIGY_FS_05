@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Feed - SocialBuddy{% endblock %}
+
+{% block content %}
+<div class="feed-container">
+    <h1>Feed</h1>
+    
+    {% if posts %}
+        <div class="posts-list">
+            {% for post in posts %}
+                <div class="post-card">
+                    <div class="post-header">
+                        <span class="post-username">{{ post.username }}</span>
+                        <span class="post-date">
+                            {{ post.created_at.strftime('%d %b %Y %I:%M %p') }}
+                        </span>
+                    </div>
+                    
+                    {% if post.caption %}
+                        <p class="post-caption">{{ post.caption }}</p>
+                    {% endif %}
+                    
+                    {% if post.media_path %}
+                        <div class="post-media">
+                            {% if post.media_path.endswith('.mp4') %}
+                                <video controls>
+                                    <source src="{{ url_for('static', filename=post.media_path) }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% else %}
+                                <img src="{{ url_for('static', filename=post.media_path) }}" alt="Post image">
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="post-actions">
+                        <form method="POST" action="{{ url_for('like_post', post_id=post.id) }}" style="display: inline;">
+                            <button type="submit" class="btn-like {% if post_user_liked[post.id] %}liked{% endif %}">
+                                ❤️ {{ post_likes[post.id] }} Likes
+                            </button>
+                        </form>
+                        <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn-comment">
+                            💬 {{ post_comments[post.id] }} Comments
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-posts">No posts yet. Be the first to <a href="{{ url_for('create_post') }}">create a post</a>!</p>
+    {% endif %}
+</div>
+{% endblock %}
+
